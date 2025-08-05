@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .header a:hover {
+            color: #ffdd57;
+        }
+
+        .search-container {
+            max-width: 1200px;
+            width: 90%;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: left;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        input[type="number"],
+        input[type="price_from"],
+        input[type="price_to"],
+        input[type="dtime_from"],
+        input[type="dtime_to"],
+        input[type="atime_from"],
+        input[type="atime_to"],
+        input[type="stopover_from"],
+        input[type="stopover_to"],
+        input[type="max_stopovers"],
+        input[type="max_sector_stopovers"],
+        input[type="ret_dtime_from"],
+        input[type="ret_dtime_to"],
+        input[type="ret_atime_from"],
+        input[type="ret_atime_to"],
+        input[type="nights-from"],
+        input[type="nights-to"],
+        input[type="max_fly_duration"],
+        input[type="adult_hold_bag"],
+        input[type="adult_hand_bag"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        input[type="number"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .input-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-row > div {
+            flex: 1;
+        }
+
+        .info-circle {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 12px;
+            line-height: 18px;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .info-circle:hover {
+            background-color: #0056b3;
+        }
+
+        .info-popup {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            width: 200px;
+            text-align: left;
+            font-size: 14px;
+            z-index: 10;
+        }
+
+        .info-circle:hover + .info-popup {
+            display: block;
+        }
+
+        #search-button {
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+        }
+
+        #search-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.02);
+        }
+
+        #search-button.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .loading-spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .autocomplete-container {
+            position: relative; /* Essential for absolute positioning of dropdown */
+            display: inline-block;
+            width: 100%; /* Or your desired width */
+        }
+        
+        .autocomplete-input {
+            width: 100%; /* Make input take full width */
+            /* Your existing input styles */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        
+        .autocomplete-dropdown {
+            position: absolute;
+            width: 100%; /* Match input width exactly */
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            animation: slideDown 0.3s ease-in-out;
+            box-sizing: border-box; /* Include padding and border in width */
+            margin-top: -1px; /* Align perfectly with input */
+            left: 0; /* Align with left edge of container */
+        }
+        
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        
+        .autocomplete-item {
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .autocomplete-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .selected-destinations-container {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            gap: 8px;
+        }
+
+        .selected-destination {
+            background-color: #4caf50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .selected-destination:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .remove-destination {
+            margin-left: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            color: #fff;
+            transition: color 0.3s;
+        }
+
+        .remove-destination:hover {
+            color: #ff4444;
+        }
+
+        .search-explanation {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
+            padding: 16px 24px;
+            margin: 24px 0 32px 0;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            font-size: 1.08em;
+            text-align: center;
+            border-right: 5px solid #007bff;
+        }
+        .search-explanation h2 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.3em;
+            text-align: center;
+        }
+        .search-explanation p {
+            margin-bottom: 0;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                flex-direction: column;
+            }
+
+            .search-container {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left-header">
+            <a href="/">Search</a>
+            <a href="/advanced_search">Advanced Search</a>
+            <a href="/destination_search">Destination Search</a>
+        </div>
+        <div class="right-header">
+            <a href="/big_trip">Big Trip Maker</a>
+            <a href="/faq">FAQ</a>
+        </div>
+    </div>
+    <div class="search-explanation">
+        <h2>How to Use This Search</h2>
+        <p>
+            Here you can search for flights with a few more parameters to match your needs.
+            It is prone to errors so please make sure you follow the instructions carefully.
+            If the list of destinations and/or dates is long or you aren't seeing flights to all the destinations, try and do it in chunks to see as otherwise you will only be shown the first 600/1000 options.
+        </p>
+    </div>
+    <div class="search-container">
+        <h1>Advanced Search</h1>
+        <form action="/advanced_search" method="post" id="searchForm">
+            <div class="search-parameters">
+                <div class="autocomplete-container">
+                    <div class="input-row">
+                        <div>
+                            <label for="origin">Origin:</label>
+                            <div class="info-circle" data-popup="popup1">?</div>
+                            <div class="info-popup" id="popup1">This is where you are flying out of. You can choose to fly out of a specific airport(s), a variety of airports in a city or a country.</div>
+                        </div>
+                        <div>
+                            <label for="destination">Destinations Search:</label>
+                            <div class="info-circle" data-popup="popup2">?</div>
+                            <div class="info-popup" id="popup2">This is where you are flying to. You must click on the destination if you want to search for it, you know its been selected if it appears below. You can choose to fly to a specific airport(s), a variety of airports in a city or a country. If you are unsure where you want to go just leave it blank.</div>
+                        </div>
+                        <div>   
+                            <label for="search-type">Search Type:</label>
+                            <div class="info-circle" data-popup="popup3">?</div>
+                            <div class="info-popup" id="popup3">A one way is just the flight there and a return is the flight there and back.</div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <input type="text" id="origin" name="origin" class="autocomplete-input" placeholder="Enter origin" required>
+                        <div class="autocomplete-dropdown" id="origin-autocomplete"></div>
+                        <input type="text" id="destination" name="destination" class="autocomplete-input" placeholder="Enter destination(s)">
+                        <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
+                        <input type="hidden" id="selected-destinations-input" name="selected_destinations" value="">
+                        <select class="form-control" id="search-type" name="search-type">
+                            <option value="one-way">One Way</option>
+                            <option value="return">Return</option>
+                        </select>
+                    </div>
+                </div>
+                <h2>Destinations:</h2>
+                <div id="selected-destinations-container"></div>
+
+                <!-- Departure Date Range -->
+                <div class="date-inputs">
+                    <div class="input-row">
+                        <div>
+                            <label for="departure-from">Earliest Departure Date:</label>
+                            <div class="info-circle" data-popup="popup4">?</div>
+                            <div class="info-popup" id="popup4">The earliest date you want your flight to leave.</div>
+                        </div>
+                        <div>
+                            <label for="departure-to">Latest Departure Date:</label>
+                            <div class="info-circle" data-popup="popup5">?</div>
+                            <div class="info-popup" id="popup5">The latest date you want your flight to leave.</div>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <input type="date" name="departure-from" id="departure-from" required>
+                        <input type="date" name="departure-to" id="departure-to" required>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="currency">Currency:</label>
+                        <br>
+                        <label for="price_from">Min Price:</label>
+                        <br>
+                        <label for="price_to">Max Price(Leave empty if no maximum):</label>
+                    </div>
+                    <!--div class="info-circle" data-popup="popup13">?</div>
+                    <div class="info-popup" id="popup13">The currency you want to see the price of. It will show it in Euros anyway.</div!-->
+                    <div>
+                        <select class="form-control" id="currency" name="currency">
+                            <option value="GBP">GBP</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="AUD">AUD</option>
+                            <option value="CZK">CZK</option>
+                            <option value="DKK">DKK</option>
+                            <option value="HNL">HNL</option>
+                            <option value="HNL">HNL</option>
+                            <option value="HRK">HRK</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                        <input type="price_from" name="price_from" id="price_from" placeholder="Minimum Price" title="Minimum Price">
+                        <input type="price_to" name="price_to" id="price_to" placeholder="Maximum Price" title="Maximum Price">
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="max_fly_duration">Max Flight(s) Duration:</label>
+                        <br>
+                        <label for="ret_from_diff_city">Are you ok returning from a different city:</label>
+                        <br>
+                        <label for="ret_to_diff_city">Are you ok returning to a different city:</label>
+                    </div>
+
+                    <div>                        
+                        <input type="max_fly_duration" name="max_fly_duration" id="max_fly_duration" placeholder="Max Flight(s) Duration (in hours)" title="Max Flight(s) Duration (in hours)">
+                        <select class="ret_from_diff_city" id="ret_from_diff_city" name="ret_from_diff_city">
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                        </select>
+                        <select class="ret_to_diff_city" id="ret_to_diff_city" name="ret_to_diff_city">
+                            <option value="True">Yes</option> 
+                            <option value="False">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="selected_cabins">Selected Cabin:</label>
+                        <br>
+                        <label for="adult_hold_bag">Bags in Hold:</label>
+                        <br>
+                        <label for="adult_hand_bag">Extra Hand Bag?</label>
+                    </div>
+                    <div>
+                        <select class="selected_cabins" id="selected_cabins" name="selected_cabins">
+                            <option value="M">Economy</option> <!-- This is the default value -->
+                            <option value="W">Premium Economy</option>
+                            <option value="C">Business</option>
+                            <option value="F">First Class</option>
+                        </select>
+                        <select class="adult_hold_bag" id="adult_hold_bag" name="adult_hold_bag">
+                            <option value=""></option>
+                            <option value="0">0</option>
+                            <option value="1">1</option> 
+                            <option value="2">2</option>
+                        </select>
+                        <select class="adult_hand_bag" id="adult_hand_bag" name="adult_hand_bag">
+                            <option value=""></option>
+                            <option value="1">Yes</option> 
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="fly_days">Select day you wish to fly on for departure:</label>
+                        <br>
+                        <label for="ret_fly_days">Select day you wish to fly on for return:</label>
+                    </div>
+                    <div>
+                        <select class="fly_days" id="fly_days" name="fly_days" title="Fly Day">
+                            <option value="">Any</option> <!-- This is the default value -->
+                            <option value="1">Monday</option> 
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                            <option value="0">Sunday</option>
+                        </select>
+                        
+                        <select class="ret_fly_days" id="ret_fly_days" name="ret_fly_days" title="Return Fly Day">
+                            <option value="">Any</option> <!-- This is the default value -->
+                            <option value="1">Monday</option> 
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                            <option value="0">Sunday</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="only_working_days">Do you want to depart only on working days(weekdays):</label>
+                        <br>
+                        <label for="only_weekends">Do you want to depart only on weekends:</label>
+                    </div>
+                    <div>
+                        <select class="only_working_days" id="only_working_days" name="only_working_days">
+                            <option value="False">No</option>
+                            <option value="True">Yes</option>
+                        </select>
+                        <select class="only_weekends" id="only_weekends" name="only_weekends">
+                            <option value="False">No</option>
+                            <option value="True">Yes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div><h2>Please put these in 24 hour format with hour followed by minute, e.g. 14:30 for 2:30 PM</h2></div>
+                    <div>
+                        <input type="dtime_from" name="dtime_from" id="dtime_from" placeholder="Departure Time From" title="Departure Time From">
+                        <input type="dtime_to" name="dtime_to" id="dtime_to" placeholder="Departure Time To" title="Departure Time To">
+                        <input type="atime_from" name="atime_from" id="atime_from" placeholder="Arrival Time From" title="Arrival Time From">
+                        <input type="atime_to" name="atime_to" id="atime_to" placeholder="Arrival Time To" title="Arrival Time To">
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div><h2>Please put these in format of hour followed by minute, e.g. 48:00 for 2 days</h2></div>
+                    <div>
+                        <input type="stopover_from" name="stopover_from" id="stopover_from" placeholder="Stopover Length From" title="Stopover Length From">
+                        <input type="stopover_to" name="stopover_to" id="stopover_to" placeholder="Stopover Length To" title="Stopover Length To">
+                        <input type="max_stopovers" name="max_stopovers" id="max_stopovers" placeholder="Max Stopovers" title="Max Stopovers">
+                        <input type="max_sector_stopovers" name="max_sector_stopovers" id="max_sector_stopovers" placeholder="Max Stopovers per Flight" title="Max Stopovers per Flight">
+                    </div>
+                </div>
+
+                <div class="input-row">
+                    <div>
+                        <label for="conn_on_diff_airport">Do you mind having an airport change for a connection:</label>
+                        <br>
+                        <label for="ret_from_diff_airport">Do you mind leaving from a different airport on your return flight:</label>
+                        <br>
+                        <label for="ret_to_diff_airport">Do you mind returning to a different airport to the one you departed from:</label>
+                    </div>
+                    <div>
+                        <select class="conn_on_diff_airport" id="conn_on_diff_airport" name="conn_on_diff_airport">
+                            <option value="0">Yes</option>
+                            <option value="1">No</option>
+                        </select>
+                        <select class="ret_from_diff_airport" id="ret_from_diff_airport" name="ret_from_diff_airport">
+                            <option value="0">Yes</option>
+                            <option value="1">No</option>
+                        </select>
+                        <select class="ret_to_diff_airport" id="ret_to_diff_airport" name="ret_to_diff_airport">
+                            <option value="0">Yes</option>
+                            <option value="1">No</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <!-- Return Options (Hidden by default) -->
+                <div class="return-options" id="return-options">
+                    <label for="return-choice">Choose Return Option:</label>
+                    <div class="info-circle" data-popup="popup6">?</div>
+                    <div class="info-popup" id="popup6">Here you can choose between a range of dates for when you want your flight to return or a range of nights in your destination.</div>
+                    <div class="input-row">
+                        <select id="return-choice">
+                            <option value="" disabled selected>Select an option</option>
+                            <option value="date">Range of Return Dates</option>
+                            <option value="nights">Range of Number of Nights</option>
+                            <option value="both">Both a Range of Return Dates and Number of Nights</option>
+                        </select>
+                    </div>
+                    <div class="date-inputs" id="return-dates">
+                        <div class="input-row">
+                            <div>
+                                <label for="return-from">Earliest Return Date:</label>
+                                <div class="info-circle" data-popup="popup7">?</div>
+                                <div class="info-popup" id="popup7">The earliest date you want your return flight to depart.</div>
+                            </div>
+                            <div>
+                                <label for="return-to">Latest Return Date:</label>
+                                <div class="info-circle" data-popup="popup8">?</div>
+                                <div class="info-popup" id="popup8">The latest date you want your return flight to depart.</div>
+                            </div>
+                        </div>
+                        <div class="input-row">
+                            <input type="date" name="return-from" id="return-from">
+                            <input type="date" name="return-to" id="return-to">
+                        </div>
+                        <div class="input-row">
+                            <div>Please put these in 24 hour format with hour followed by minute, e.g. 14:30 for 2:30 PM</div>
+                            <div>
+                                <input type="ret_dtime_from" name="ret_dtime_from" id="ret_dtime_from" placeholder="Return Departure Time From" title="Return Departure Time From">
+                                <input type="ret_dtime_to" name="ret_dtime_to" id="ret_dtime_to" placeholder="Return Departure Time To" title="Return Departure Time To">
+                                <input type="ret_atime_from" name="ret_atime_from" id="ret_atime_from" placeholder="Return Arrival Time From" title="Return Arrival Time From">
+                                <input type="ret_atime_to" name="ret_atime_to" id="ret_atime_to" placeholder="Return Arrival Time To" title="Return Arrival Time To">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-row" id="return-nights">
+                        <label for="nights-from">Nights:</label>
+                        <div class="input-row" id="return-nights">
+                            <input type="number" name="nights-from" id="nights-from" placeholder="From">
+                            <input type="number" name="nights-to" id="nights-to" placeholder="To">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="search-button">
+                <span class="button-text">Search</span>
+                <div class="loading-spinner"></div>
+            </button>
+            <button type="reset" id="clearForm" style="margin-top: 10px; width: 100%; padding: 12px; background-color: #dc3545; color: #fff; border: none; border-radius: 6px; font-size: 16px; font-weight: 500; cursor: pointer;">Clear</button>
+        </form>
+    </div>
+
+    <!-- JavaScript for Autocomplete and Search -->
+    <script>
+        let destinations = [];
+
+        fetch('/static/destinations.json')
+        .then(response => response.json())
+        .then(data => {
+            destinations = data.destinations;
+            // Now initialize your autocomplete with the loaded destinations
+            originAutocomplete(document.getElementById("origin"), destinations, true);
+            autocomplete(document.getElementById("destination"), destinations);
+        });
+
+        // On page load, check for saved data
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedData = localStorage.getItem('advancedSearchFormData');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                function setVal(id, val) {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val || '';
+                }
+                setVal('origin', formData.origin);
+                //setVal('destination', formData.destination);
+                setVal('selected-destinations-input', formData.selectedDestinations);
+                setVal('search-type', formData.searchType);
+                setVal('departure-from', formData.departureFromValue);
+                setVal('departure-to', formData.departureToValue);
+                setVal('return-from', formData.returnFromValue);
+                setVal('return-to', formData.returnToValue);
+                setVal('nights-from', formData.nightsFromValue);
+                setVal('nights-to', formData.nightsToValue);
+                setVal('currency', formData.currency);
+                setVal('price_from', formData.priceFrom);
+                setVal('price_to', formData.priceTo);
+                setVal('max_fly_duration', formData.maxFlyDuration);
+                setVal('ret_from_diff_city', formData.retFromDiffCity);
+                setVal('ret_to_diff_city', formData.retToDiffCity);
+                setVal('selected_cabins', formData.selectedCabins);
+                setVal('adult_hold_bag', formData.adultHoldBag);
+                setVal('adult_hand_bag', formData.adultHandBag);
+                setVal('fly_days', formData.flyDays);
+                setVal('ret_fly_days', formData.retFlyDays);
+                setVal('only_working_days', formData.onlyWorkingDays);
+                setVal('only_weekends', formData.onlyWeekends);
+                setVal('dtime_from', formData.dtimeFrom);
+                setVal('dtime_to', formData.dtimeTo);
+                setVal('atime_from', formData.atimeFrom);
+                setVal('atime_to', formData.atimeTo);
+                setVal('stopover_from', formData.stopoverFrom);
+                setVal('stopover_to', formData.stopoverTo);
+                setVal('max_stopovers', formData.maxStopovers);
+                setVal('max_sector_stopovers', formData.maxSectorStopovers);
+                setVal('conn_on_diff_airport', formData.connOnDiffAirport);
+                setVal('ret_from_diff_airport', formData.retFromDiffAirport);
+                setVal('ret_to_diff_airport', formData.retToDiffAirport);
+                setVal('return-choice', formData.returnChoice);
+                setVal('ret_dtime_from', formData.retDtimeFrom);
+                setVal('ret_dtime_to', formData.retDtimeTo);
+                setVal('ret_atime_from', formData.retAtimeFrom);
+                setVal('ret_atime_to', formData.retAtimeTo);
+
+                // Restore selected destinations visually if needed
+                if (formData.selectedDestinations) {
+                    updateSelectedDestinationsFromCache(formData.selectedDestinations.split(";"));
+                }
+            } else {
+                // If no saved data, hide return options
+                hideReturnOptions();
+            }
+        });
+
+        function updateSelectedDestinationsFromCache(destArray) {
+            // Filter out empty strings and trim whitespace
+            selectedDestinations = destArray.filter(dest => dest && dest.trim() !== "").map(dest => dest.trim());
+            const selectedDestinationsContainer = document.getElementById("selected-destinations-container");
+            const hiddenInput = document.getElementById("selected-destinations-input");
+            selectedDestinationsContainer.innerHTML = "";
+            hiddenInput.value = selectedDestinations.join(";");
+
+            selectedDestinations.forEach((dest) => {
+                const selectedDest = document.createElement("div");
+                selectedDest.className = "selected-destination";
+                selectedDest.textContent = dest;
+
+                const removeButton = document.createElement("span");
+                removeButton.textContent = "               (***Click Here To Remove***)";
+                removeButton.className = "remove-destination";
+                removeButton.addEventListener("click", function () {
+                    const index = selectedDestinations.indexOf(dest);
+                    if (index !== -1) {
+                        selectedDestinations.splice(index, 1);
+                        updateSelectedDestinationsFromCache(selectedDestinations);
+                    }
+                });
+
+                selectedDest.appendChild(removeButton);
+                selectedDestinationsContainer.appendChild(selectedDest);
+            });
+        }
+
+        // Get all elements with the info-circle class
+        const infoCircles = document.querySelectorAll(".info-circle");
+
+        // Add event listeners to each info circle
+        infoCircles.forEach((infoCircle) => {
+            infoCircle.addEventListener("mouseover", () => {
+                // Get the corresponding popup element using the data-popup attribute
+                const popupId = infoCircle.getAttribute("data-popup");
+                const popup = document.getElementById(popupId);
+
+                // Show the popup
+                popup.style.display = "block";
+            });
+
+            infoCircle.addEventListener("mouseout", () => {
+                // Get the corresponding popup element using the data-popup attribute
+                const popupId = infoCircle.getAttribute("data-popup");
+                const popup = document.getElementById(popupId);
+
+                // Hide the popup
+                popup.style.display = "none";
+            });
+        });
+
+        function autocomplete(input, destinationList) {
+            const dropdown = document.getElementById("autocomplete-dropdown");
+            const selectedDestinations = [];
+            const selectedDestinationsContainer = document.getElementById("selected-destinations-container");
+            const hiddenInput = document.getElementById("selected-destinations-input");
+
+            input.addEventListener("input", function(e) {
+                const inputValue = e.target.value.toLowerCase();
+                dropdown.innerHTML = "";
+
+                if (!inputValue) {
+                    dropdown.style.display = "none";
+                    return;
+                }
+
+                let matchingDestinations = [];
+                let count = 0;
+
+                for (let i = 0; i < destinationList.length; i++) {
+                    const dest = destinationList[i];
+                    if (dest.toLowerCase().includes(inputValue)) {
+                        const item = document.createElement("div");
+                        item.className = "autocomplete-item";
+                        item.textContent = dest;
+                        item.addEventListener("click", function () {
+                            if (!selectedDestinations.includes(dest)) {
+                                selectedDestinations.push(dest);
+                                updateSelectedDestinations();
+                                updateHiddenInput();
+                                input.value = "";
+                                dropdown.style.display = "none";
+                            }
+                        });
+                        dropdown.appendChild(item);
+                        matchingDestinations.push(dest);
+
+                        count++;
+                        if (count >= 20) {
+                            break;
+                        }
+                    }
+                }
+
+                if (matchingDestinations.length === 0) {
+                    dropdown.style.display = "none";
+                    return;
+                }
+
+                dropdown.style.display = "block";
+            });
+
+            document.addEventListener("click", function(e) {
+                if (!e.target.matches(".autocomplete-input") && !e.target.matches(".autocomplete-item")) {
+                    dropdown.style.display = "none";
+                }
+            });
+
+            function updateSelectedDestinations() {
+                selectedDestinationsContainer.innerHTML = "";
+
+                selectedDestinations.forEach((dest) => {
+                    const selectedDest = document.createElement("div");
+                    selectedDest.className = "selected-destination";
+                    selectedDest.textContent = dest;
+
+                    const removeButton = document.createElement("span");
+                    removeButton.textContent = "               (Remove)";
+                    removeButton.className = "remove-destination";
+                    removeButton.addEventListener("click", function () {
+                        const index = selectedDestinations.indexOf(dest);
+                        if (index !== -1) {
+                            selectedDestinations.splice(index, 1);
+                            updateSelectedDestinations();
+                            updateHiddenInput();
+                        }
+                    });
+
+                    selectedDest.appendChild(removeButton);
+                    selectedDestinationsContainer.appendChild(selectedDest);
+                });
+            }
+
+            function updateHiddenInput() {
+                hiddenInput.value = selectedDestinations.join(";");
+            }
+        }
+        
+        
+
+        function originAutocomplete(input, destinationList) {
+            const dropdown = input.nextElementSibling;
+            input.addEventListener("input", function(e) {
+                const inputValue = e.target.value.toLowerCase();
+                dropdown.innerHTML = "";
+        
+                if (!inputValue) {
+                    dropdown.style.display = "none";
+                    return;
+                }
+        
+                let matchingDestinations = [];
+                let count = 0; // Counter for limiting results
+        
+                for (let i = 0; i < destinationList.length; i++) {
+                    const dest = destinationList[i];
+                    if (dest.toLowerCase().includes(inputValue)) {
+                        const item = document.createElement("div");
+                        item.className = "autocomplete-item";
+                        item.textContent = dest;
+                        item.addEventListener("click", function() {
+                            input.value = dest;
+                            dropdown.style.display = "none";
+                        });
+                        dropdown.appendChild(item);
+                        matchingDestinations.push(dest);
+        
+                        count++; // Increment the counter
+
+                        // Limit the results to 20
+                        if (count >= 20) {
+                            break;
+                        }
+                    }
+                }
+        
+                if (matchingDestinations.length === 0) {
+                    dropdown.style.display = "none";
+                    return;
+                }
+        
+                dropdown.style.display = "block";
+            });
+        
+            document.addEventListener("click", function(e) {
+                if (!e.target.matches(".autocomplete-input")) {
+                    dropdown.style.display = "none";
+                }
+            });
+        }
+
+
+        originAutocomplete(document.getElementById("origin"), destinations, true);
+        autocomplete(document.getElementById("destination"), destinations);
+
+
+        // Function to hide the return options
+        function hideReturnOptions() {
+            const returnOptions = document.getElementById("return-options");
+            returnOptions.style.display = "none";
+        }
+
+        // Function to show the return options
+        function showReturnOptions() {
+            const returnOptions = document.getElementById("return-options");
+            returnOptions.style.display = "block";
+        }
+
+        // Function to tell user the date is wrong
+        function dateError() {
+            alert('Some of your dates do not make sense as some are later/earlier than they should be');
+        }
+
+        // Event listener for the search type dropdown
+        document.getElementById("search-type").addEventListener("change", function() {
+            const searchType = this.value;
+        
+            if (searchType === "one-way") {
+                // If One Way is selected, hide the return options
+                hideReturnOptions();
+            } else if (searchType === "return") {
+                // If Return is selected, show the return options
+                showReturnOptions();
+            }
+        });
+        
+        
+         // Function to hide all return options
+        function hideAllReturnOptions() {
+            document.getElementById("return-dates").style.display = "none";
+            document.getElementById("return-nights").style.display = "none";
+        }
+
+        // Function to show the range of return dates
+        function showReturnDates() {
+            hideAllReturnOptions();
+            document.getElementById("return-dates").style.display = "block";
+        }
+
+        // Function to show the range of nights
+        function showReturnNights() {
+            hideAllReturnOptions();
+            document.getElementById("return-nights").style.display = "block";
+        }
+
+        // Event listener for the return choice dropdown
+        document.getElementById("return-choice").addEventListener("change", function() {
+            const returnChoice = this.value;
+
+            if (returnChoice === "date") {
+                // If Range of Return Dates is selected, show return dates
+                showReturnDates();
+            } else if (returnChoice === "nights") {
+                // If Range of Nights is selected, show return nights
+                showReturnNights();
+            } else if (returnChoice === "both") {
+                // If Both is selected, show both return dates and nights
+                document.getElementById("return-dates").style.display = "block";
+                document.getElementById("return-nights").style.display = "block";
+            }
+        });
+
+
+        document.getElementById("departure-to").addEventListener("change", function() {
+            const departureToValue = this.value;
+            const departureFromValue = document.getElementById("departure-from").value;
+        
+            // Check if either of the date fields is empty
+            if (!departureToValue || !departureFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+        
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const departureFrom = new Date(departureFromValue);
+
+            let today = new Date();    // Gets today's date
+        
+            if (departureTo < departureFrom) {
+                alert("Departure date 'To' cannot be earlier than 'From'.");
+                this.value = ''; // Clear the value of 'To'
+            }
+
+            if (departureTo < today) {
+                alert("Departure date cannot be earlier than today.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+        
+        document.getElementById("departure-from").addEventListener("change", function() {
+            const departureFromValue = this.value;
+            
+            const departureToValue = document.getElementById("departure-to").value;
+        
+            // Check if either of the date fields is empty
+            if (!departureToValue & !departureFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+        
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const departureFrom = new Date(departureFromValue);
+
+            let today = new Date();    // Gets today's date
+        
+            if (departureTo < departureFrom) {
+                alert("Departure date 'To' cannot be earlier than 'From'.");
+                document.getElementById("departure-to").value = ''; // Clear the value of 'To'
+            }
+
+            if (departureFrom < today) {
+                alert("Departure date cannot be earlier than today.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+
+        document.getElementById("nights-to").addEventListener("change", function() {
+            const nightsToValue = this.value;
+            const nightsFromValue = document.getElementById("nights-from").value;
+        
+            // Check if either of the date fields is empty
+            if (!nightsToValue || !nightsFromValue) {
+                alert("Please fill in both Nights fields.");
+                return; // Exit the function
+            }
+        
+            // Convert the date strings into Date objects for comparison
+            const nightsTo = new Date(nightsToValue);
+            const nightsFrom = new Date(nightsFromValue);
+        
+            if (nightsTo < nightsFrom) {
+                alert("Nights 'To' cannot be less than 'To'.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+
+        document.getElementById("nights-from").addEventListener("change", function() {
+            const nightsFromValue = this.value;
+            const nightsToValue = document.getElementById("nights-to").value;
+        
+            // Check if either of the date fields is empty
+            if (!nightsToValue & !nightsFromValue) {
+                alert("Please fill in both Nights fields.");
+                return; // Exit the function
+            }
+        
+            // Convert the date strings into Date objects for comparison
+            const nightsTo = new Date(nightsToValue);
+            const nightsFrom = new Date(nightsFromValue);
+        
+            if (nightsTo < nightsFrom) {
+                alert("Nights 'To' cannot be less than 'To'.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+
+        document.getElementById("return-to").addEventListener("change", function() {
+
+            checkDepartureDates
+            const returnToValue = this.value;
+            const returnFromValue = document.getElementById("return-from").value;
+            const departureToValue = document.getElementById("departure-to").value;
+
+            // Check if either of the date fields is empty
+            if (!returnToValue || !returnFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const returnTo = new Date(returnToValue);
+            const returnFrom = new Date(returnFromValue);
+        
+            if (returnTo < departureTo) {
+                alert("Return date 'To' cannot be earlier than Departure 'To'.");
+                this.value = ''; // Clear the value of 'To'
+            } else if (returnTo < returnFrom ) {
+                // If Return from later than to error
+                alert("Return date 'To' cannot be earlier than 'From'.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+
+        document.getElementById("return-from").addEventListener("change", function() {
+            const returnFromValue = this.value;
+            const returnToValue = document.getElementById("return-to").value;
+            const departureToValue = document.getElementById("departure-to").value;
+
+            // Check if either of the date fields is empty
+            if (!returnToValue & !returnFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const returnTo = new Date(returnToValue);
+            const returnFrom = new Date(returnFromValue);
+        
+            if (returnTo < departureTo) {
+                alert("Return date 'To' cannot be earlier than Departure 'To'.");
+                this.value = ''; // Clear the value of 'To'
+            } else if (returnTo < returnFrom ) {
+                // If Return from later than to error
+                alert("Return date 'To' cannot be earlier than 'From'.");
+                this.value = ''; // Clear the value of 'To'
+            }
+        });
+
+        // Function to check if departure dates are valid
+        function checkDepartureDates() {
+            const departureToValue = document.getElementById("departure-to").value;
+            const departureFromValue = document.getElementById("departure-from").value;
+        
+            // Check if either of the date fields is empty
+            if (!departureToValue || !departureFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+        
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const departureFrom = new Date(departureFromValue);
+
+            let today = new Date();    // Gets today's date
+        
+            if (departureTo < departureFrom) {
+                alert("Departure date 'To' cannot be earlier than 'From'.");
+                document.getElementById('departure-to').value = '' // Clear the value of 'To'
+                return;
+            }
+
+            if (departureTo < today) {
+                alert("Departure date cannot be earlier than today.");
+                document.getElementById('departure-to').value = '' // Clear the value of 'To' 
+                return;
+            }
+        };
+
+        // Function to check if departure dates are valid
+        function checkReturnDates() {
+            const returnToValue = document.getElementById("return-to").value;
+            const returnFromValue = document.getElementById("return-from").value;
+            const departureToValue = document.getElementById("departure-to").value;
+
+            // Check if either of the date fields is empty
+            if (!returnToValue || !returnFromValue) {
+                alert("Please fill in both departure date fields.");
+                return; // Exit the function
+            }
+
+            // Convert the date strings into Date objects for comparison
+            const departureTo = new Date(departureToValue);
+            const returnTo = new Date(returnToValue);
+            const returnFrom = new Date(returnFromValue);
+        
+            if (returnTo < departureTo) {
+                alert("Return date 'To' cannot be earlier than Departure 'To'.");
+                document.getElementById('return-to').value = '' // Clear the value of 'To'
+                return;
+            } else if (returnTo < returnFrom ) {
+                // If Return from later than to error
+                alert("Return date 'To' cannot be earlier than 'From'.");
+                document.getElementById('return-to').value = '' // Clear the value of 'To'
+                return;
+            }
+        };
+
+
+        
+
+        document.getElementById("clearForm").addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default reset behavior
+            localStorage.removeItem('advancedSearchFormData');
+            document.getElementById("searchForm").reset(); // Reset the form fields
+            updateSelectedDestinationsFromCache([]); // Clear the visual destination list
+            hideReturnOptions();
+            hideAllReturnOptions();
+        });
+
+        // Submit the form with selected destinations
+        document.getElementById("searchForm").addEventListener("submit", function (event) {
+
+            const searchType = document.getElementById("search-type").value;
+            checkDepartureDates();
+        
+            if (searchType === "one-way") {
+                // If One Way is selected, hide the return options
+                document.getElementById("return-to").value = ''; // Clear the values of returning
+                document.getElementById("return-from").value = '';
+                document.getElementById("nights-to").value = ''; 
+                document.getElementById("nights-from").value = '';
+            } else if (document.getElementById("return-choice").value === 'date' ) {
+                document.getElementById("nights-to").value = ''; 
+                document.getElementById("nights-from").value = '';
+                checkReturnDates();
+            } else if (document.getElementById("return-choice").value === 'nights' ) {
+                document.getElementById("return-to").value = ''; 
+                document.getElementById("return-from").value = '';
+                checkNights();
+            } else {
+                checkReturnDates();
+                checkNights();
+            }
+
+            event.preventDefault();
+
+            // Add loading transition
+            const searchButton = document.getElementById("search-button");
+            const buttonText = document.querySelector(".button-text");
+            const loadingSpinner = document.querySelector(".loading-spinner");
+            // Show loading spinner
+            buttonText.style.display = "none";
+            loadingSpinner.style.display = "block";
+            searchButton.classList.add("loading");
+
+
+            // Save search filters
+            const formData = {
+                origin: document.getElementById('origin').value,
+                destination: document.getElementById('destination').value,
+                selectedDestinations: document.getElementById("selected-destinations-input").value,
+                searchType: document.getElementById("search-type").value,
+                departureFromValue: document.getElementById("departure-from").value,
+                departureToValue: document.getElementById("departure-to").value,
+                returnFromValue: document.getElementById("return-from").value,
+                returnToValue: document.getElementById("return-to").value,
+                nightsFromValue: document.getElementById("nights-from").value,
+                nightsToValue: document.getElementById("nights-to").value,
+                currency: document.getElementById("currency").value,
+                priceFrom: document.getElementById("price_from").value,
+                priceTo: document.getElementById("price_to").value,
+                maxFlyDuration: document.getElementById("max_fly_duration").value,
+                retFromDiffCity: document.getElementById("ret_from_diff_city").value,
+                retToDiffCity: document.getElementById("ret_to_diff_city").value,
+                selectedCabins: document.getElementById("selected_cabins").value,
+                adultHoldBag: document.getElementById("adult_hold_bag").value,
+                adultHandBag: document.getElementById("adult_hand_bag").value,
+                flyDays: document.getElementById("fly_days").value,
+                retFlyDays: document.getElementById("ret_fly_days").value,
+                onlyWorkingDays: document.getElementById("only_working_days").value,
+                onlyWeekends: document.getElementById("only_weekends").value,
+                dtimeFrom: document.getElementById("dtime_from").value,
+                dtimeTo: document.getElementById("dtime_to").value,
+                atimeFrom: document.getElementById("atime_from").value,
+                atimeTo: document.getElementById("atime_to").value,
+                stopoverFrom: document.getElementById("stopover_from").value,
+                stopoverTo: document.getElementById("stopover_to").value,
+                maxStopovers: document.getElementById("max_stopovers").value,
+                maxSectorStopovers: document.getElementById("max_sector_stopovers").value,
+                connOnDiffAirport: document.getElementById("conn_on_diff_airport").value,
+                retFromDiffAirport: document.getElementById("ret_from_diff_airport").value,
+                retToDiffAirport: document.getElementById("ret_to_diff_airport").value,
+                returnChoice: document.getElementById("return-choice").value,
+                retDtimeFrom: document.getElementById("ret_dtime_from").value,
+                retDtimeTo: document.getElementById("ret_dtime_to").value,
+                retAtimeFrom: document.getElementById("ret_atime_from").value,
+                retAtimeTo: document.getElementById("ret_atime_to").value
+            };
+            localStorage.setItem('advancedSearchFormData', JSON.stringify(formData));
+        
+        
+            // Get the selected destinations
+            const selectedDestinations = document.getElementById("selected-destinations-input").value.split(";");
+        
+            // Remove existing hidden input fields
+            document.querySelectorAll('[name^="destination"]').forEach(function (element) {
+                element.remove();
+            });
+            
+        
+            // Add hidden input fields to the form for each selected destination
+            selectedDestinations.forEach(function (dest, index) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = 'destination';  // Set the name to 'destination'
+                input.value = dest;
+                document.getElementById("searchForm").appendChild(input);
+            });
+        
+            // Now submit the form
+            document.getElementById("searchForm").submit();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ destination_name }} - Destination Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('{{ hero_image }}');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content h2 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #6a11cb;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .score-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .score-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .nearby-places {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .place-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #6a11cb;
+            transition: all 0.3s ease;
+        }
+
+        .place-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .place-name {
+            font-weight: 600;
+            color: #6a11cb;
+            margin-bottom: 5px;
+        }
+
+        .place-distance {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .cost-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .cost-item:hover {
+            border-color: #6a11cb;
+            transform: translateY(-3px);
+        }
+
+        .cost-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #6a11cb;
+            margin-bottom: 5px;
+        }
+
+        .cost-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .temperature-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .weather-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .weather-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .weather-month {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .quick-facts {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .quick-facts h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .fact-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .fact-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .fact-label {
+            font-weight: 500;
+        }
+
+        .fact-value {
+            font-weight: 600;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg, #55efc4, #00b894);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .tips-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .tip-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .scores-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cost-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>{{ destination_name }}</h1>
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-image">
+                <div class="hero-content">
+                    <h2>{{ destination_name }}</h2>
+                    <p>{{ destination_tagline | default("Discover the beauty and culture of this amazing destination") }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <div class="main-content">
+                <!-- Description -->
+                <div class="card">
+                    <h3><i class="fas fa-info-circle"></i>About {{ destination_name }}</h3>
+                    <div class="description">
+                        {{ destination_description | default("This beautiful destination offers a unique blend of culture, history, and natural beauty. From stunning landscapes to vibrant local traditions, visitors can experience authentic local life while enjoying modern amenities. The area is known for its welcoming atmosphere and diverse attractions that cater to all types of travelers.") }}
+                    </div>
+                </div>
+
+                <!-- Photo Gallery -->
+                <div class="card">
+                    <h3><i class="fas fa-camera"></i>Photo Gallery</h3>
+                    <div class="gallery">
+                        {% for image in gallery_images | default([
+                            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+                            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400",
+                            "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=400",
+                            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400",
+                            "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400",
+                            "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400"
+                        ]) %}
+                        <img src="{{ image }}" alt="Gallery image" onclick="openModal('{{ image }}')">
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Destination Scores -->
+                <div class="card">
+                    <h3><i class="fas fa-star"></i>Destination Ratings</h3>
+                    <div class="scores-grid">
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.food | default("8.5") }}</div>
+                            <div class="score-label">Food & Dining</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.nightlife | default("7.8") }}</div>
+                            <div class="score-label">Nightlife</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.nature | default("9.2") }}</div>
+                            <div class="score-label">Nature & Scenery</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.weather | default("8.0") }}</div>
+                            <div class="score-label">Weather</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.culture | default("8.7") }}</div>
+                            <div class="score-label">Culture & History</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ scores.safety | default("8.3") }}</div>
+                            <div class="score-label">Safety</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nearby Places -->
+                <div class="card">
+                    <h3><i class="fas fa-map-marker-alt"></i>Nearby Attractions</h3>
+                    <div class="nearby-places">
+                        {% for place in nearby_places | default([
+                            {"name": "Historic City Center", "distance": "2 km", "type": "Historical Site"},
+                            {"name": "National Park", "distance": "15 km", "type": "Nature Reserve"},
+                            {"name": "Local Beach", "distance": "8 km", "type": "Beach"},
+                            {"name": "Mountain Viewpoint", "distance": "25 km", "type": "Scenic Spot"},
+                            {"name": "Traditional Market", "distance": "1 km", "type": "Shopping"},
+                            {"name": "Art Museum", "distance": "3 km", "type": "Cultural Site"}
+                        ]) %}
+                        <div class="place-item">
+                            <div class="place-name">{{ place.name }}</div>
+                            <div class="place-distance">{{ place.distance }} • {{ place.type }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <!-- Quick Facts -->
+                <div class="quick-facts">
+                    <h4><i class="fas fa-info"></i> Quick Facts</h4>
+                    <div class="fact-item">
+                        <span class="fact-label">Best Time to Visit:</span>
+                        <span class="fact-value">{{ best_time | default("Apr - Oct") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Language:</span>
+                        <span class="fact-value">{{ language | default("Local Language") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Currency:</span>
+                        <span class="fact-value">{{ currency | default("Local Currency") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Time Zone:</span>
+                        <span class="fact-value">{{ timezone | default("UTC+0") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Population:</span>
+                        <span class="fact-value">{{ population | default("N/A") }}</span>
+                    </div>
+                </div>
+
+                <!-- Average Costs -->
+                <div class="card">
+                    <h3><i class="fas fa-euro-sign"></i>Average Daily Costs</h3>
+                    <div class="cost-breakdown">
+                        <div class="cost-item">
+                            <div class="cost-value">€{{ costs.accommodation | default("75") }}</div>
+                            <div class="cost-label">Accommodation</div>
+                        </div>
+                        <div class="cost-item">
+                            <div class="cost-value">€{{ costs.food | default("35") }}</div>
+                            <div class="cost-label">Food & Drinks</div>
+                        </div>
+                        <div class="cost-item">
+                            <div class="cost-value">€{{ costs.transport | default("15") }}</div>
+                            <div class="cost-label">Local Transport</div>
+                        </div>
+                        <div class="cost-item">
+                            <div class="cost-value">€{{ costs.activities | default("25") }}</div>
+                            <div class="cost-label">Activities</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Travel Tips -->
+                <div class="tips-section">
+                    <h4><i class="fas fa-lightbulb"></i> Travel Tips</h4>
+                    {% for tip in travel_tips | default([
+                        "Book accommodations in advance during peak season",
+                        "Try local street food for authentic flavors",
+                        "Learn basic phrases in the local language",
+                        "Carry cash as some places don't accept cards",
+                        "Respect local customs and dress codes"
+                    ]) %}
+                    <div class="tip-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>{{ tip }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Temperature Chart -->
+        <div class="temperature-chart">
+            <h3><i class="fas fa-thermometer-half"></i>Annual Temperature Overview</h3>
+            <div class="chart-container">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+            <div class="weather-info">
+                {% for month in weather_data | default([
+                    {"month": "Jan", "temp": "15°C", "icon": "fas fa-snowflake"},
+                    {"month": "Apr", "temp": "20°C", "icon": "fas fa-cloud-sun"},
+                    {"month": "Jul", "temp": "28°C", "icon": "fas fa-sun"},
+                    {"month": "Oct", "temp": "22°C", "icon": "fas fa-cloud-sun"}
+                ]) %}
+                <div class="weather-item">
+                    <div class="weather-icon"><i class="{{ month.icon }}"></i></div>
+                    <div class="weather-temp">{{ month.temp }}</div>
+                    <div class="weather-month">{{ month.month }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Gallery image">
+        </div>
+    </div>
+
+    <script>
+        // Temperature Chart
+        const ctx = document.getElementById('temperatureChart').getContext('2d');
+        const temperatureChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Average Temperature (°C)',
+                    data: {{ temperature_data | default([15, 17, 19, 22, 25, 28, 30, 29, 26, 23, 19, 16]) | tojson }},
+                    borderColor: '#6a11cb',
+                    backgroundColor: 'rgba(106, 17, 203, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#6a11cb',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6
+                }, {
+                    label: 'Rainfall (mm)',
+                    data: {{ rainfall_data | default([80, 70, 60, 50, 40, 30, 20, 25, 45, 65, 75, 85]) | tojson }},
+                    borderColor: '#2575fc',
+                    backgroundColor: 'rgba(37, 117, 252, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: '#2575fc',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Temperature (°C)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Rainfall (mm)'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverRadius: 8
+                    }
+                }
+            }
+        });
+
+        // Image Modal Functions
+        function openModal(imageSrc) {
+            document.getElementById('imageModal').style.display = 'block';
+            document.getElementById('modalImage').src = imageSrc;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside the image
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+        });
+    </script>
+</body>
+</html>

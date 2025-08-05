@@ -1,0 +1,279 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.search-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.autocomplete {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="date"],
+input[type="number"] {
+    width: 150px;
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Ensure content is stacked vertically */
+}
+
+.date-inputs,.return-options {
+    display: block;
+}
+
+/* Create a container with a card-like appearance */
+.search-container {
+    max-width: 800px;
+    width: 40%;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    position: relative; /* Add this to position the headings */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+    color: #555;
+}
+
+input[type="text"],
+input[type="date"],
+select,
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+select {
+    padding: 10px;
+    background-color: #fff;
+}
+
+/* Add this CSS to adjust the layout */
+.input-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px; /* Add some spacing between rows */
+}
+
+.input-container {
+    flex-basis: 80%; /* Adjust the width as needed */
+}
+
+.return-options {
+    display: none;
+}
+
+#search-button {
+    border: none; /* Remove the border */
+    outline: none; /* Remove the outline */
+    display: block;
+    width: 100%;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 3px;
+    padding: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#search-button:hover {
+    background-color: #0056b3;
+}
+
+.autocomplete-results {
+    position: absolute;
+    width: 100%;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 4px 6px rgba(27, 14, 14, 0.829);
+}
+
+/* Updated CSS for autocomplete dropdown and selected destinations */
+.autocomplete-dropdown {
+    position: absolute;
+    width: calc(100% - 2px); /* Match the width of the input box */
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    animation: slideDown 0.3s ease-in-out;
+}
+
+.selected-destinations-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    gap: 5px;
+}
+
+.selected-destination {
+    background-color: #4caf50;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px; /* Rounded corners for a tag-like look */
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.selected-destination:hover {
+    background-color: #45a049; /* Slightly darker on hover */
+    transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+.remove-destination {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 12px;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+.remove-destination:hover {
+    color: #ff4444; /* Red color on hover for the close button */
+}
+
+/* Style for individual autocomplete items */
+.autocomplete-item {
+    padding: 10px;
+    font-size: 16px;
+    color: #333; /* Text color */
+    cursor: pointer;
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+/* Hover effect for autocomplete items */
+.autocomplete-item:hover {
+    background-color: #f2f2f2; /* Hover background color */
+}
+
+.autocomplete-input {
+    width: 150px; /* Set a fixed width for the input */
+    padding: 8px;
+    font-size: 16px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #00a2ff;
+    color: #fff;
+    padding: 10px;
+}
+
+.header .left-header {
+    align-self: flex-start;
+}
+
+.header .right-header {
+    align-self: flex-end;
+}
+
+.info-circle {
+    width: 10px;
+    height: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.info-popup {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 200px;
+    text-align: center;
+}
+
+
+.autocomplete-container {
+    position: relative;
+}
+
+.autocomplete-dropdown {
+    display: none;
+    position: absolute;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+}

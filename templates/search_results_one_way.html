@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.1.0/tablesort.min.js"></script>
+    <!-- Include noUiSlider CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+    <!-- Include FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        header p {
+            margin: 10px 0 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Filters Section */
+        .filters {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .filters h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters h2 i {
+            color: #6a11cb;
+        }
+
+        .filters label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .filters input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .filters button {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .filters button:hover {
+            background: #2575fc;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .noUi-target {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .noUi-connect {
+            background: #6a11cb;
+        }
+
+        .noUi-handle {
+            background: #2575fc;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .noUi-handle:before, .noUi-handle:after {
+            background: white;
+        }
+
+        .slider-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        .days-filter {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .days-filter label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+
+        .days-filter input {
+            margin: 0;
+        }
+
+        .toggle-filters {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .toggle-filters:hover {
+            background: #2575fc;
+        }
+
+        .back {
+            background:rgb(56, 84, 134);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        .back:hover {
+            background:rgb(9, 62, 153);
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            table-layout: fixed; /* Ensures table fits screen width */
+        }
+
+        thead {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        th i {
+            margin-left: 5px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:nth-child(odd) {
+            background: #f9f9f9;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f1f1f1;
+        }
+
+        tbody tr:hover {
+            background: #e1e1e1;
+        }
+
+        td a {
+            color: #2575fc;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        td a:hover {
+            color: #6a11cb;
+        }
+
+        filter {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Percentage Background Colors */
+        td[data-percentage] {
+            text-align: center;
+            font-weight: bold;
+            color: black;
+            border-radius: 5px;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Flight Search Results</h1>
+            <p>Find the best flight deals tailored for you.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div><button class="back" onclick="history.back()">Go Back</button></div>
+        <button class="toggle-filters" onclick="toggleFilters()">
+            <i class="fas fa-filter"></i> Toggle Filters
+        </button>
+
+        <div class="filters" id="filters">
+            <h2><i class="fas fa-filter"></i>Filters</h2>
+            <button type="button" onclick="resetFilters()">Reset Filters</button>
+            <label>Days:</label>
+            <div class="days-filter">
+                {% set day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+                {% for day in day_names %}
+                    <label><input type="checkbox" name="day" value="{{ day }}" checked> {{ day }}</label>
+                {% endfor %}
+            </div>
+
+            <div class="slider-container">
+                <label>Departure Time (0-23h):</label>
+                <div id="departureSlider"></div>
+                <div class="slider-values">
+                    <span id="departureMin"></span>
+                    <span id="departureMax"></span>
+                </div>
+            </div>
+
+            <div class="slider-container">
+                <label>Arrival Time (0-23h):</label>
+                <div id="arrivalSlider"></div>
+                <div class="slider-values">
+                    <span id="arrivalMin"></span>
+                    <span id="arrivalMax"></span>
+                </div>
+            </div>
+
+            <label>Price Range:</label>
+            <input type="number" id="minPrice" placeholder="Min Price">
+            <input type="number" id="maxPrice" placeholder="Max Price">
+
+            <div class="duration-filter">
+                <label>Flight Duration (hours):</label>
+                <input type="number" id="minDuration" placeholder="Min" min="0">
+                to
+                <input type="number" id="maxDuration" placeholder="Max" min="0">
+            </div>
+            <button type="submit" id="filter">Apply Filters</button>
+        </div>
+
+        <table id="my-table">
+            <thead>
+                <tr>
+                    <th>Origin<i class="fas fa-sort"></i></th>
+                    <th>Destination<i class="fas fa-sort"></i></th>
+                    <th>Departure</th>
+                    <th>Arrival</th>
+                    <th data-sort-method="number">Departure Day<i class="fas fa-sort"></i></th>
+                    <th data-sort-method="number">Flight(s) Duration<i class="fas fa-sort"></i></th>
+                    <th data-sort-method="number">Expected Price<i class="fas fa-sort"></i></th>
+                    <th data-sort-method="number">Percentage Off<i class="fas fa-sort"></i></th>
+                    <th data-sort-method="number">Price ({{CURR}})<i class="fas fa-sort"></i></th>
+                    <th class="no-sort">Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(length) %}
+                    <tr>
+                        <td>{{ data['countryFrom'][i] }}, {{ data['cityFrom'][i] }}</td>
+                        <td><a href='/destinations/{{ country_codes[i][0] }}/{{ data['cityCodeTo'][i] }}'>{{ data['countryTo'][i] }}, {{ data['cityTo'][i] }}</a></td>
+                        <td>{{ dates[i][0].strftime("%Y-%m-%d %H:%M") }}</td>
+                        <td>{{ dates[i][1].strftime("%Y-%m-%d %H:%M") }}</td>
+                        <td>{{ data['day'][i] }}</td>
+                        <td>{{ data['hours'][i] }}h {{ data['minutes'][i] }}m</td>
+                        <td>{{ (prices[i][0] * (1 + data['percentage'][i] / 100)) | floatformat(2) }}</td>
+                        <td data-percentage="{{ data['percentage'][i] }}">{{ data['percentage'][i] }}%</td>
+                        <td>{{ prices[i][0] }}</td>
+                        <td><a href="{{ data['deep_link'][i] }}" target="_blank">Go to deal</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+
+
+        // Custom sorting function to only sort numbers
+        Tablesort.extend('number', function(item) {
+            return /^-?\d+(\.\d+)?$/.test(item.replace(/[^0-9.-]/g, ''));
+        }, function(a, b) {
+            return parseFloat(a) - parseFloat(b);
+        });
+
+        function onPageReady() {
+            new Tablesort(document.getElementById('my-table'));
+            applyPercentageColors(); // Apply percentage colors after the table is rendered
+        }
+
+        document.addEventListener('DOMContentLoaded', onPageReady, false);
+
+        // Initialize noUiSlider for departure and arrival times
+        const departureSlider = document.getElementById('departureSlider');
+        const arrivalSlider = document.getElementById('arrivalSlider');
+        const departureMin = document.getElementById('departureMin');
+        const departureMax = document.getElementById('departureMax');
+        const arrivalMin = document.getElementById('arrivalMin');
+        const arrivalMax = document.getElementById('arrivalMax');
+        const dayNameToNumber = {
+            "Monday": 1,
+            "Tuesday": 2,
+            "Wednesday": 3,
+            "Thursday": 4,
+            "Friday": 5,
+            "Saturday": 6,
+            "Sunday": 7
+        };
+
+        noUiSlider.create(departureSlider, {
+            start: [0, 23],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 23
+            }
+        });
+
+        noUiSlider.create(arrivalSlider, {
+            start: [0, 23],
+            connect: true,
+            range: {
+                'min': 0,
+                'max': 23
+            }
+        });
+
+        // Update displayed values for departure slider and filter table
+        departureSlider.noUiSlider.on('update', function(values) {
+            departureMin.textContent = Math.round(values[0]);
+            departureMax.textContent = Math.round(values[1]);
+        });
+
+        // Update displayed values for arrival slider and filter table
+        arrivalSlider.noUiSlider.on('update', function(values) {
+            arrivalMin.textContent = Math.round(values[0]);
+            arrivalMax.textContent = Math.round(values[1]);
+        });
+
+        // Add event listeners for input fields and checkboxes
+        document.getElementById('minPrice').addEventListener('input', filterTable);
+        document.getElementById('maxPrice').addEventListener('input', filterTable);
+        document.getElementById('minDuration').addEventListener('input', filterTable);
+        document.getElementById('maxDuration').addEventListener('input', filterTable);
+
+        // Add event listeners for day checkboxes
+        document.querySelectorAll('input[name="day"]').forEach(checkbox => {
+            checkbox.addEventListener('change', filterTable);
+        });
+
+        // Add event listener for the Apply Filters button
+        document.getElementById('filter').addEventListener('click', filterTable);
+
+        // Toggle filters visibility
+        function toggleFilters() {
+            const filters = document.getElementById('filters');
+            filters.style.display = filters.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function resetFilters() {
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('minDuration').value = '';
+            document.getElementById('maxDuration').value = '';
+            document.querySelectorAll('input[name="day"]').forEach(cb => cb.checked = true);
+            departureSlider.noUiSlider.set([0, 23]);
+            arrivalSlider.noUiSlider.set([0, 23]);
+            filterTable();
+        }
+
+        // Filter table rows
+        function filterTable() {
+            const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+            const minDuration = parseFloat(document.getElementById('minDuration').value) || 0;
+            const maxDuration = parseFloat(document.getElementById('maxDuration').value) || Infinity;
+            const selectedDays = Array.from(document.querySelectorAll('input[name="day"]:checked')).map(cb => cb.value);
+            const departureRange = departureSlider.noUiSlider.get();
+            const arrivalRange = arrivalSlider.noUiSlider.get();
+
+            const rows = document.querySelectorAll('#my-table tbody tr');
+            rows.forEach(row => {
+                const departureDateTime = row.cells[2].textContent.trim(); // adjust index as needed
+                const arrivalDateTime = row.cells[3].textContent.trim();   // adjust index as needed
+                // Extract hour as integer
+                const departureHour = parseInt(departureDateTime.split(' ')[1].split(':')[0]);
+                const arrivalHour = parseInt(arrivalDateTime.split(' ')[1].split(':')[0]);
+
+
+                const dayName = row.cells[4].textContent.trim();
+                const price = parseFloat(row.cells[8].textContent);
+
+                // Get duration in hours
+                const durationText = row.cells[5].textContent.trim();
+                const durationMatchArr = durationText.match(/(\d+)h\s*(\d+)m/);
+                let durationHours = 0;
+                if (durationMatchArr) {
+                    durationHours = parseInt(durationMatchArr[1]) + parseInt(durationMatchArr[2]) / 60;
+                }
+                const durationMatch = durationHours >= minDuration && durationHours <= maxDuration;
+
+                const dayMatch = selectedDays.includes(dayName);
+                const priceMatch = price >= minPrice && price <= maxPrice;
+                const departureMatch = departureHour >= departureRange[0] && departureHour <= departureRange[1];
+                const arrivalMatch = arrivalHour >= arrivalRange[0] && arrivalHour <= arrivalRange[1];
+
+                if (dayMatch && priceMatch && departureMatch && arrivalMatch && durationMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+
+        // Apply percentage colors dynamically
+        function applyPercentageColors() {
+            const percentageCells = document.querySelectorAll('td[data-percentage]');
+            percentageCells.forEach(cell => {
+                const percentage = parseFloat(cell.textContent);
+                cell.style.backgroundColor = getPercentageColor(percentage);
+            });
+        }
+
+        // Calculate percentage color
+        function getPercentageColor(percentage) {
+            if (percentage >= 100) return '#5cb85c'; // Dark green
+            if (percentage <= -100) return '#d9534f'; // Dark red
+
+            // For positive percentages (0% to 100%)
+            if (percentage >= 0) {
+                // Transition from yellow to green
+                const hue = 60 + 60 * (percentage / 100); // Green at 100%, yellow at 0%
+                const saturation = 100;
+                const lightness = 50;
+                return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            }
+
+            // For negative percentages (-100% to 0%)
+            if (percentage < 0) {
+                // Transition from yellow to red
+                const hue = 60 - (60 * (percentage / -100)); // Yellow at 0%, red at -100%
+                const saturation = 100;
+                const lightness = 50;
+                return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            }
+        }
+    </script>
+</body>
+</html>

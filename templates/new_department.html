@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Department
+{% endblock %}
+
+{% block main %}
+    <head><h3>Add Department</h3></head>
+    <main class="container py-5 text-center">
+        <form action="/new_department" method="post">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="name" placeholder="Name" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="budget" placeholder="Budget" type="integer">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="year" placeholder="Year" type="text">
+                <td class="text-start">Does the department already exist?</td>
+                <select name="exists" id="exists">
+                    <option value="y">Yes</option>
+                    <option value="n">No</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </main>
+{% endblock %}

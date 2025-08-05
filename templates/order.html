@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Order
+{% endblock %}
+
+{% block main %}
+    <main class="container py-5 text-center">
+        <form action="/order" method="post">
+            <div class="mb-3">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="name" placeholder="Name of Item" type="text">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="price" placeholder="Total Price" type="float">
+                <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="link" placeholder="Link" type="text">
+                <textarea autocomplete="off" autofocus class="form-control mx-auto w-auto" name="description" rows = '5' placeholder="Description (quantity)" type="text"></textarea>
+            </div>
+            <div class="mb-3">
+                <select name="year" id="year">
+                    <option value="22/23">22/23</option>
+                    <option value="23/24">23/24</option>
+                    <option value="24/25">24/25</option>
+                </select>
+                <select name="department" id="department">
+                    {% for department in departments %}
+                        <option value={{department[0]}}>{{department[0]}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </main>
+{% endblock %}

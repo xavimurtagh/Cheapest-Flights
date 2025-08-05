@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Ordered
+{% endblock %}
+{% block main %}
+<head>
+    <h2>Ordered/Approved</h2>
+</head>
+<main class="container py-5 text-center">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th class="text-start">Name</th>
+                <th class="text-end">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td class="text-start"><a href="/orders/{{ row[0] }}">{{ row[6] }}</a></td>
+                    <td class="text-end">{{ row[2] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!--<button class="btn btn-primary" type="submit">Change</button>-->
+</main>
+{% endblock %}

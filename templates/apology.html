@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#" />
+    <title>Flight Booking App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .header a:hover {
+            color: #ffdd57;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left-header">
+            <a href="/">Search</a>
+            <a href="/advanced_search">Advanced Search</a>
+            <a href="/destination_search">Destination Search</a>
+        </div>
+        <div class="right-header">
+            <a href="/big_trip">Big Trip Maker</a>
+            <a href="/faq">FAQ</a>
+        </div>
+    </div>
+    <div><button class="back" onclick="history.back()">Go Back</button></div>
+    <div class='container'>
+        <!--img alt="{{ top }}" class="border img-fluid" src="http://api.memegen.link/custom/{{ top | urlencode }}/{{ bottom | urlencode }}.jpg?background==https%3A%2F%2Fimg.freepik.com%2Ffree-vector%2Fcancelled-flight-people-waiting-airport_23-2148552690.jpg&token=kzm73qtm6q0vshbuucga" title="{{ top }}"!-->
+        <img class="border img-fluid" src="https://api.memegen.link/images/custom/500/Hmmm_that's_not_meant_to_happen,_please_check_you've_filled_everything_in_correctly_and_try_again.jpg?background=https%3A%2F%2Fimg.freepik.com%2Ffree-vector%2Fcancelled-flight-people-waiting-airport_23-2148552690.jpg">
+        <div><a href="https://www.freepik.com/">Designed by Freepik</a></div>
+    </div>
+</body>
+</html>

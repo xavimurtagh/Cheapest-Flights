@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .header a:hover {
+            color: #ffdd57;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            width: 90%;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        h2 {
+            text-align: left;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question {
+            font-weight: 700;
+            color: #007bff;
+            font-size: 18px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-answer {
+            color: #555;
+            line-height: 1.6;
+            padding: 10px 0;
+            display: none;
+        }
+
+        .faq-answer.show {
+            display: block;
+        }
+
+        .toggle-icon {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .faq-question.active .toggle-icon {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left-header">
+            <a href="/">Search</a>
+            <a href="/advanced_search">Advanced Search</a>
+            <a href="/destination_search">Destination Search</a>
+        </div>
+        <div class="right-header">
+            <a href="/big_trip">Big Trip Maker</a>
+            <a href="/faq">FAQ</a>
+        </div>
+    </div>
+
+    <div class="faq-container">
+        <h1>Frequently Asked Questions</h1>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is this website?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>This website seeks to achieve two things. First is to allow users to have more flexibility and wider parameters when searching for flights. This is helpful if lets say you don't know the exact dates/nights/destination and instead of looking at every permutation, this should let you do it in 1 search where you can compare them all and save time. The second is to help users gauge a rough estimate as to what that flight should cost based on its distance and other details.
+                </p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How does it work?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>On the main page there is a search box, in here you can fill in various parameters to search for flights. The details of what each one means will appear when you hover over the question mark. Using these parameters I query a search to Kiwi, the third party I'm using, which returns to me a bunch of flights that fit the criteria. These results are then processed by a model which tries to estimate a price based on the flight details and compares that to the actual price. This is the Expected Price.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Is a minus percentage good or bad?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>A minus percentage indicates that the estimated price is higher than the average price for similar flights. This theoretically suggests that the flight may be a worse deal compared to others. Ideally the percentage should be positive, indicating a better deal. However, it's important to consider that the algorithm is not perfect as well as other factors such as flight duration, layovers, and overall convenience when evaluating a flight deal.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Is this the cheapest price I can get?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Probably not. While the algorithm aims to find the best deals, it is limited to just Kiwi's price and other providers may offer cheaper prices. Kiwi tends to offer the best price with funky layovers and multi-city trips.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is the Expected Price?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>The Expected Price is an estimate of what a flight should cost based on various factors such as distance, duration, and quality. It was calculated using a model that analyzes these factors and their correlation with a large dataset of flight prices which are then used to make predictions, the code behind it is available on my GitHub.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How good is the Expected Price algorithm?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>It's ok. <strong>MAKE SURE TO BE CERTAIN THAT THE ESTIMATED PRICE IS IN LINE WITH THE PRICES AROUND IT AND WHAT YOU EXPECT BEFORE YOU BUY IT!</strong> Like with everything, please use common sense, if an hour flight is £400 and I've given it a good score that is most likely an error please don't buy it. There will probably be errors and so my best advice is to use it as a guide not a fact. The code is on my github if you would like to see it, improve it or use it. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>¿Cómo cambio el idioma?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Perdona pero en este momento solo lo tengo en inglés. Recomiendo que utilices la función de Google que traduce páginas en tu idioma. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What are the different Searches?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>There are several types of searches you can perform on this website. The first is <strong>Search</strong> this is best for finding specific flights based on your criteria for a range of dates and destinations. The second is the <strong>Advanced Search</strong> which allows you to apply more filters and find flights that better match your specific needs, due to the increased user input it is also more prone to errors. The last is called <strong>Destination Search</strong> which is a feature which allows users to search for flights without knowing exactly where they want to go and what is well priced but know what kind of holiday they would like to have. On it you can also select/deselect specific destinations to your liking.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How are the destination scores calculated?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>The destination scores are calculated using a mix of the internet and AI input. The scores themselves are not my personal opinion, I have seen it make mistakes and I am sure there are more which are innacurate. I am sorry if you don't agree with them and if there is one you think is wrong feel free to let me know and I can look into it to get an accurate score.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is the Big Trip Maker?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>The Big Trip Maker is a feature that allows you to plan a trip with multiple destinations. It hasn't been implemented yet but the idea is that you can select the countries you want to visit, and it will generate a list of potential flights and itineraries based on your preferences. This is particularly useful for long trips where you want to visit several places without having to search for each flight individually such as a gap year itinerary.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is your cut?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Based on what I've read, for every price purchased using a link on my page, I get 4/3% of what you paid for it. As I understand it there should not be an increase in price between mine and Kiwi's website if so email me(info below). The plan is for the 4/3% is so that eventually I can run this algorithm on a server which would constantly have flights added to it and improve, then the rest would be for website charges and if there's more I'll spend it on offseting carbon emissions. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Do I have to pay in euros?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>No. It's only in euros as that is the currency I used in the algorithm. When you click on the link there should be somewhere on the top right of the Kiwi page where you can switch currency and language. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What if I want to book for more than 1 person?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>If this is the case, select the flight you want to book for multiple people and on that page there will be an option where you can choose number of people. Booking together is also typically cheaper as airlines dynamically price flights meaning they get more expensive the more in demand they are. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What about bags?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>You can select this when you've clicked on the link in the results page. Some flights have it already included, the link will show you the full details. </p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Will the price always be the same as on Kiwi?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>While theoretically you should not be charged anymore, I cannot give you a definitive yes. So far though I haven't found there to be any difference between the price they give me and the one on their website.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What if I find a bug?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>If you find a bug, please report it to me via email or through the contact form. Include as much detail as possible about the issue, including steps to reproduce it if you can.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Are the flight prices guaranteed?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>While I strive to provide accurate pricing information and during the search it will be accurate, I cannot guarantee that the prices will remain the same at the time of booking due to that being outside of my control. Prices can fluctuate based on demand and availability, so if you like a fare book as soon as you find a fare that works for you.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What if I have a question not answered here?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>If you have a question that is not answered here, feel free to reach out to me via email or through the contact form on the website. I will do my best to respond as quickly as possible.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How often is the flight data updated?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Flight data is updated every time you perform a search. However, availability and prices can change rapidly.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Can I book flights directly through this website?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>No, you cannot book flights directly through this website. Instead, you will be redirected to Kiwi's website where you can complete your booking.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What if I have a problem with my booking?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>If you have a problem with your booking, please contact Kiwi's customer support directly. They will be able to assist you with any issues related to your flight. Unfortunately I won't be able to help with any of that.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What is the cancellation policy?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>The cancellation policy varies by airline and fare type. When you book a flight through Kiwi, you will be able to see the specific cancellation policy for that flight before you complete your booking. Make sure to read it carefully. Unfortunately I cannot filter by cancellation policy as they do not provide me with that data. If you need a cancellation policy I would recommend booking through the airline as they offer the best cancellation policies and sometimes if its cheaper on Kiwi, they offer price matches.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Is my personal data safe?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, your personal data is safe. This website does not store any personal information. When you book a flight through Kiwi, your data is handled by them and is subject to their privacy policy. I do not have access to any of your personal information or payment details.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Can I use this website for business or first class travel?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, you can use this website for business travel, to search for business or first class flights use advanced search and under selected cabin switch it to what you would like. Unfortunately, I have trained my model using economy class data which means that the expected price and percentage off will be based on an economy flight with the same details so it may be wrong. If you have specific requirements for business travel, such as flexible tickets or additional services, I recommend checking directly with the airlines or using a dedicated business travel service.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>What errors are you aware of?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p><strong>1.</strong> Different return cities: Due to how the API works, the values I get for distance are only for the way there, because of this if I am flying to Los Angeles but returning from somewhere else which is a noticeable distance from the destination such as New York the value will be heavily skewed as the distance will be inaccurate. This won't be as bad with cities close to each other but it still gives a misleading final value. So if the return flight is different to the inbound flight, take the expected price with a grain of salt. You could search each leg individually to get a feel for the expected price.<strong>2.</strong> Searching for flights with a large number of destinations that are spread around the world. The problem is that the response Kiwi give me is limited to 1000 and is sorted by price, this means that if you try to search for flights which tend to vary substantially in price, it will only/mostly show the cheaper options. To get around this search in chunks separately for flights depending on the distance to origin. <strong>3.</strong> Some flights do not showup. This one is very frustrating, I have seen flights on Kiwi's website as well as other flight search engines, which have flights which mine simply does not show for some reason no matter however I tinker the search parameters. I am trying to fix this but I am not sure how or if I am even able to with the api.<strong>4.</strong>The algorithm penalises flights with longer layovers more heavily, which may not always align with user preferences for cheaper options or even if they want to explore a destination for a while. <strong>5.</strong>The algorithm doesn't take into account baggage meaning that when you ask for it in added baggage in advanced search the percentage will be lower than you want. The price will also be slightly off but not by a significant amount. If you want to see the percentage I would search without cabin baggage at first, look at the proper expected price and percentage and then after clicking on the link adding it there.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>How do I contact you?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Email: xavimurtagh@gmail.com   Contact Form:<a href="https://docs.google.com/forms/d/e/1FAIpQLSerdmXgXXfGTfx4SCEWrDzQPAw56eyL2pcDBP2l7yHEuRK3hA/viewform?usp=sf_link" target="_blank">Click Here</a></p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Why Kiwi and is it safe?</span>
+                <span class="toggle-icon">+</span>
+            </div>
+            <div class="faq-answer">
+                <p>Kiwi is a third party flight engine that allows users to book flights. I have flown with them before and think they are reliable but please remember they are a third party and make sure you are comfortable with using them before booking. There have been reports of bad customer service, the refunds can be slow and there is no 24-hour cancellation policy. I used them as I can search for flights easily using their api and I don't need to hadnle card trasactions using them. If you don't feel comfortable, search on another third party it should be similar in price.</p>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                question.classList.toggle('active');
+                answer.classList.toggle('show');
+            });
+        });
+    </script>
+</body>
+</html>

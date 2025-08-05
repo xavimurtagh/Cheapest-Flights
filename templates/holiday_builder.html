@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#" />
+    <title>Flight Booking App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s;
+        }
+
+        .header a:hover {
+            color: #ffdd57;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="left-header">
+            <a href="/">Search</a>
+            <a href="/advanced_search">Advanced Search</a>
+            <a href="/faq">FAQ</a>
+        </div>
+        <div class="right-header">
+            <a href="/big_trip">Big Trip Maker</a>
+            <a href="/holiday_builder">Holiday Builder</a>
+        </div>
+    </div>
+    <div class='container'>
+        <img class="border img-fluid" src="{{ url_for('static', filename='work_in_progress.jpg') }}" alt="Work in Progress Meme">
+    </div>
+</body>
+</html>

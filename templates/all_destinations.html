@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>All Destinations by Country</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; color: #222; }
+        .country { margin-bottom: 30px; }
+        .country h2 { color: #2575fc; border-bottom: 2px solid #2575fc; padding-bottom: 5px; }
+        ul.destinations { list-style: disc inside; margin-left: 20px; }
+        li { margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>All Destinations by Country</h1>
+        <div><button class="back" onclick="history.back()">Go Back</button></div>
+        <div class="description">If you would like to see a page for this destination or if there is an error, please let me know in the following form!</div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSerdmXgXXfGTfx4SCEWrDzQPAw56eyL2pcDBP2l7yHEuRK3hA/viewform?usp=sf_link" target="_blank">Request a page for this destination</a>
+        {% for country, destinations in countries.items() %}
+            <div class="country">
+                <h2>{{ country }}</h2>
+                <ul class="destinations">
+                    {% for destination_name, country_code, airport_code in destinations %}
+                        <li><a href="/destinations/{{ country_code }}/{{ airport_code }}">{{ destination_name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="description">If you would like to see a page for this destination or if there is an error, please let me know in the following form!</div>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSerdmXgXXfGTfx4SCEWrDzQPAw56eyL2pcDBP2l7yHEuRK3hA/viewform?usp=sf_link" target="_blank">Request a page for this destination</a>
+</body>
+</html>

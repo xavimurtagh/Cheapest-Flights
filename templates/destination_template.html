@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ destination_name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-section {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('{{ hero_image }}');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content h2 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            color: #6a11cb;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05);
+        }
+
+        .score-item {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 6px;
+            padding: 10px 10px;
+            font-size: 1em;
+            margin-bottom: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.3s ease;
+        }
+
+        .score-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .score-title {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .score-value {
+            font-size: 1.2em;
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .nearby-places-section h4 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .nearby-places-section {
+            background: linear-gradient(135deg,rgb(196, 143, 58),rgb(166, 86, 1));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .place-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .place-name {
+            font-weight: 600;
+        }
+
+        .place-distance {
+            font-weight: 600;
+        }
+
+        .cost-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .cost-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .cost-item:hover {
+            border-color: #6a11cb;
+            transform: translateY(-3px);
+        }
+
+        .cost-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #6a11cb;
+            margin-bottom: 5px;
+        }
+
+        .cost-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .temperature-chart {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .weather-item {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-radius: 10px;
+        }
+
+        .weather-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .weather-temp {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .weather-month {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .quick-facts {
+            background: linear-gradient(135deg, #fd79a8, #e84393);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .quick-facts h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .fact-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .fact-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .fact-label {
+            font-weight: 500;
+        }
+
+        .fact-value {
+            font-weight: 600;
+        }
+
+        .tips-section {
+            background: linear-gradient(135deg,rgb(69, 200, 163),rgb(3, 135, 109));
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .tips-section h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .tip-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            justify-content: space-between;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            display: flex;
+        }
+
+        .tip-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .tip-label {
+            font-weight: 500;
+        }
+
+        .tip-value {
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+
+            .scores-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .cost-breakdown {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>{{ destination_name }}</h1>
+            <a href="javascript:history.back()" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Back
+            </a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="hero-section">
+            <div class="hero-image">
+                <div class="hero-content">
+                    <h2>{{ destination_name }}</h2>
+                    <p>{{ destination_tagline | default("Discover the beauty and culture of this amazing destination") }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="main-content">
+                <!-- Description -->
+                <div class="card">
+                    <h3><i class="fas fa-info-circle"></i>About {{ destination_name }}</h3>
+                    <div class="description">
+                        {{ destination_description | default("This beautiful destination offers a unique blend of culture, history, and natural beauty. From stunning landscapes to vibrant local traditions, visitors can experience authentic local life while enjoying modern amenities. The area is known for its welcoming atmosphere and diverse attractions that cater to all types of travelers.") }}
+                    </div>
+                </div>
+
+                <!-- Photo Gallery -->
+                <div class="card">
+                    <h3><i class="fas fa-camera"></i>Photo Gallery</h3>
+                    <div class="gallery">
+                        {% for image in photos | default([
+                            "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400",
+                            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400",
+                            "https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=400",
+                            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400",
+                            "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400",
+                            "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=400"
+                        ]) %}
+                            <img src="{{ image }}" alt="Gallery image" onclick="openModal('{{ image }}')">
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3><i class="fas fa-star"></i>Destination Ratings</h3>
+                    <div class="scores-grid">
+                        <div class="score">
+                            <div class="score-title">Food</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= food_score|int %}
+                                        <span style="color:gold; font-size:1.3em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ food_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Nightlife</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= nightlife_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ nightlife_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Nature</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= nature_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ nature_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Weather</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= weather_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ weather_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Culture</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= culture_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ culture_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Safety</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= safety_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ safety_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Cost</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= cost_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ cost_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Transport</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= transport_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ transport_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Activities</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= activities_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ activities_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">History</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= history_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ history_score }}/10)</span>
+                            </div>
+                        </div>
+                        <div class="score">
+                            <div class="score-title">Under the Radar</div>
+                            <div class="score-value">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= under_radar_score|int %}
+                                        <span style="color:gold; font-size:1.2em;">&#9733;</span>
+                                    {% else %}
+                                        <span style="color:#ccc; font-size:1.2em;">&#9733;</span>
+                                    {% endif %}
+                                {% endfor %}
+                                <span style="font-size:0.9em; color:#555;">({{ under_radar_score }}/10)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                
+
+            <div class="sidebar">
+                <div class="nearby-places-section">
+                    <h4><i class="fas fa-info"></i>Nearby Attractions</h4>
+                    <div class="nearby-places">
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_1 }}</span>
+                            <span class="place-distance">{{ nearby_distance_1 }} {{ nearby_type_1 }}</span>
+                        </div>
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_2 }}</span>
+                            <span class="place-distance">{{ nearby_distance_2 }} {{ nearby_type_2 }}</span>
+                        </div>
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_3 }}</span>
+                            <span class="place-distance">{{ nearby_distance_3 }} {{ nearby_type_3 }}</span>
+                        </div>
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_4 }}</span>
+                            <span class="place-distance">{{ nearby_distance_4 }} {{ nearby_type_4 }}</span>
+                        </div>
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_5 }}</span>
+                            <span class="place-distance">{{ nearby_distance_5 }} {{ nearby_type_5 }}</span>
+                        </div>
+                        <div class="place-item">
+                            <span class="place-name">{{ nearby_place_6 }}</span>
+                            <span class="place-distance">{{ nearby_distance_6 }} {{ nearby_type_6 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quick Facts -->
+                <div class="quick-facts">
+                    <h4><i class="fas fa-info"></i> Quick Facts</h4>
+                    <div class="fact-item">
+                        <span class="fact-label">Best Time to Visit:</span>
+                        <span class="fact-value">{{ best_time | default("Apr - Oct") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Language:</span>
+                        <span class="fact-value">{{ language | default("Local Language") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Currency:</span>
+                        <span class="fact-value">{{ currency | default("Local Currency") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Time Zone:</span>
+                        <span class="fact-value">{{ timezone | default("UTC+0") }}</span>
+                    </div>
+                    <div class="fact-item">
+                        <span class="fact-label">Population:</span>
+                        <span class="fact-value">{{ population | default("N/A") }}</span>
+                    </div>
+                </div>
+
+                    <!-- Travel Tips -->
+                <div class="tips-section">
+                    <h4><i class="fas fa-lightbulb"></i> Travel Tips</h4>
+                    <div class="tips-list">
+                        <div class="tip-item">{{ tip_1 }}</div>
+                        <div class="tip-item">{{ tip_2 }}</div>
+                        <div class="tip-item">{{ tip_3 }}</div>
+                        <div class="tip-item">{{ tip_4 }}</div>
+                        <div class="tip-item">{{ tip_5 }}</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-chart-line"></i>Image Sources</h3>
+                    <p>These Images may not be representative of {{ destination_name }}, for more images, look at these sources:</p>
+                    <a href="https://pixabay.com/images/search/{{ destination_name }}" style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                        <i style="display:block;width:75px;height:25px;overflow:hidden"><img src="https://pixabay.com/static/img/logo.svg" style="width:94px"></i>Search Images
+                    </a>
+                    <a href="https://www.pexels.com/search/{{ destination_name }}" style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                        <i style="display:block;width:75px;height:25px;overflow:hidden"><img src="https://logos-world.net/wp-content/uploads/2025/02/Pexels-Logo-New.png" style="width:55px"></i>Images Provided By 
+                    </a>
+                    <a href="https://unsplash.com/s/photos/{{ destination_name }}" style="margin:3px 15px 5px 0;font-size:12px;line-height:1.7;color:#555;display:block;float:left;padding:9px 12px 6px;border:1px solid #ccc">
+                        <i style="display:block;width:75px;height:25px;overflow:hidden"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Unsplash_wordmark_logo.svg/640px-Unsplash_wordmark_logo.svg.png" style="width:75px"></i> Search Images
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget">
+            <!-- BudgetYourTrip Widget Embed -->
+            <script async src="https://widget.budgetyourtrip.com/location-widget-js/{{ geonames_id }}" type="text/javascript"></script><a href="https://www.budgetyourtrip.com/{{ country_name }}/{{ destination_name }}" target="_blank" class="budgetyourtrip-logo-pushdown" rel="noopener"></a>
+        </div>
+
+
+        
+    </div>
+
+    <!-- Modal for Image Gallery -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Gallery Image">
+        </div>
+    </div>
+
+    <!-- Modal for Image Gallery -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Gallery Image">
+        </div>
+    </div>
+
+    
+    
+
+    <script>
+
+        // Image Modal Functions
+        function openModal(imageSrc) {
+            document.getElementById('imageModal').style.display = 'block';
+            document.getElementById('modalImage').src = imageSrc;
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside the image
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading animation for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.1.0/tablesort.min.js"></script>
+    <style>
+        /* General Page Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #e0e0e0;
+            background-color: #121212;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Center the table */
+        table {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #1e1e1e;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Table Head */
+        thead {
+            background-color: #272727;
+        }
+
+        th {
+            padding: 12px 16px;
+            font-size: 16px;
+            text-align: left;
+            border-bottom: 2px solid #444;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* Sort Icons */
+        th[role=columnheader]:not(.no-sort)::after {
+            content: '▼';
+            float: right;
+            font-size: 14px;
+            margin-left: 8px;
+            color: #aaa;
+            opacity: 0.5;
+            transform: rotate(0deg);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        th[aria-sort=ascending]::after {
+            transform: rotate(180deg);
+            opacity: 1;
+            color: #fff;
+        }
+
+        th[aria-sort=descending]::after {
+            opacity: 1;
+            color: #fff;
+        }
+
+        /* Table Body */
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #444;
+            text-align: left;
+        }
+
+        /* Alternating row colors */
+        tbody tr:nth-child(odd) {
+            background-color: #222;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #1a1a1a;
+        }
+
+        /* Hover effect on rows */
+        tbody tr:hover {
+            background-color: #333;
+        }
+
+        /* Styling for Links */
+        td a {
+            color: #00bcd4;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+
+        td a:hover {
+            color: #ff4081;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            th, td {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            th::after {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <table id="my-table">
+        <caption><h2>Search Results</h2></caption>
+        <thead>
+            <tr>
+                <th>Origin Country</th>
+                <th>Origin</th>
+                <th>Destination Country</th>
+                <th>Destination</th>
+                <th data-sort-method="number">Departure Month</th>
+                <th>Departure Day</th>
+                <th data-sort-method="number">Departure Hour</th>
+                <th data-sort-method="number">Duration</th>
+                <th data-sort-method="number">Distance</th>
+                <th data-sort-method="number">Distance_per_duration</th>
+                <th data-sort-method="number">Quality</th>
+                <th data-sort-method="number">Arrival Hour</th>
+                <th data-sort-method="number">Expected Price</th>
+                <th>Our Evaluation</th>
+                <th data-sort-method="number">Percentage Off</th>
+                <th data-sort-method="number">Price</th>
+                <th class="no-sort">Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(length) %}
+                <tr>
+                    <td>{{ data['countryFrom'][i] }}</td>
+                    <td>{{ data['cityFrom'][i] }}</td>
+                    <td>{{ data['countryTo'][i] }}</td>
+                    <td>{{ data['cityTo'][i] }}</td>
+                    <td>{{ data['departure_month'][i] }}</td>
+                    <td>{{ data['day'][i] }}</td>
+                    <td>{{ data['departure_hour'][i] }}</td>
+                    <td>{{ data['hours'][i] }}h {{ data['minutes'][i] }}m</td>
+                    <td>{{ data['distance'][i] }}</td>
+                    <td>{{ data['distance_per_duration'][i] }}</td>
+                    <td>{{ data['quality_per_flight'][i] }}</td>
+                    <td>{{ data['arrival_hour'][i] }}</td>
+                    <td>{{ data['avgprice'][i] }}€</td>
+                    <td>{{ data['under_over'][i] }}</td>
+                    <td>{{ data['percentage'][i] }}%</td>
+                    <td>{{ data['price'][i] }}€</td>
+                    <td><a href="{{ data['deep_link'][i] }}" target="_blank">Go to deal</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        // Custom sorting function to only sort numbers
+        Tablesort.extend('number', function(item) {
+            return /^-?\d+(\.\d+)?$/.test(item.replace(/[^0-9.-]/g, ''));
+        }, function(a, b) {
+            return parseFloat(a) - parseFloat(b);
+        });
+
+        function onPageReady() {
+            new Tablesort(document.getElementById('my-table'));
+        }
+
+        document.addEventListener('DOMContentLoaded', onPageReady, false);
+    </script>
+
+</body>
+</html>

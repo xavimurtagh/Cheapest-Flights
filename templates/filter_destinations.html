@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Filter Destinations</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+    h1 { background: #2c3e50; color: #fff; margin: 0; padding: 20px; }
+    form { margin-bottom: 30px; }
+    label { display: block; margin-top: 10px; }
+    .slider-group { margin-bottom: 10px; }
+    .destination-list { margin-top: 20px; }
+    .destination-list label { display: block; margin-bottom: 5px; }
+    button { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Filter Destinations</h1>
+  <form id="score-filters">
+    <div class="slider-group">
+      <label>Food Score: <span id="food_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="food_score_min" oninput="updateLabel('food_score')">
+      <input type="range" min="1" max="10" value="10" id="food_score_max" oninput="updateLabel('food_score')">
+    </div>
+    <div class="slider-group">
+      <label>Nightlife Score: <span id="nightlife_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="nightlife_score_min" oninput="updateLabel('nightlife_score')">
+      <input type="range" min="1" max="10" value="10" id="nightlife_score_max" oninput="updateLabel('nightlife_score')">
+    </div>
+    <div class="slider-group">
+      <label>Nature Score: <span id="nature_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="nature_score_min" oninput="updateLabel('nature_score')">
+      <input type="range" min="1" max="10" value="10" id="nature_score_max" oninput="updateLabel('nature_score')">
+    </div>
+    <div class="slider-group">
+      <label>Weather Score: <span id="weather_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="weather_score_min" oninput="updateLabel('weather_score')">
+      <input type="range" min="1" max="10" value="10" id="weather_score_max" oninput="updateLabel('weather_score')">
+    </div>
+    <div class="slider-group">
+      <label>Culture Score: <span id="culture_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="culture_score_min" oninput="updateLabel('culture_score')">
+      <input type="range" min="1" max="10" value="10" id="culture_score_max" oninput="updateLabel('culture_score')">
+    </div>
+    <div class="slider-group">
+      <label>Safety Score: <span id="safety_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="safety_score_min" oninput="updateLabel('safety_score')">
+      <input type="range" min="1" max="10" value="10" id="safety_score_max" oninput="updateLabel('safety_score')">
+    </div>
+    <div class="slider-group">
+      <label>Cost Score: <span id="cost_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="cost_score_min" oninput="updateLabel('cost_score')">
+      <input type="range" min="1" max="10" value="10" id="cost_score_max" oninput="updateLabel('cost_score')">
+    </div>
+    <div class="slider-group">
+      <label>Transport Score: <span id="transport_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="transport_score_min" oninput="updateLabel('transport_score')">
+      <input type="range" min="1" max="10" value="10" id="transport_score_max" oninput="updateLabel('transport_score')">
+    </div>
+    <div class="slider-group">
+      <label>Activities Score: <span id="activities_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="activities_score_min" oninput="updateLabel('activities_score')">
+      <input type="range" min="1" max="10" value="10" id="activities_score_max" oninput="updateLabel('activities_score')">
+    </div>
+    <div class="slider-group">
+      <label>History Score: <span id="history_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="history_score_min" oninput="updateLabel('history_score')">
+      <input type="range" min="1" max="10" value="10" id="history_score_max" oninput="updateLabel('history_score')">
+    </div>
+    <div class="slider-group">
+      <label>Under Radar Score: <span id="under_radar_score_val">1-10</span></label>
+      <input type="range" min="1" max="10" value="1" id="under_radar_score_min" oninput="updateLabel('under_radar_score')">
+      <input type="range" min="1" max="10" value="10" id="under_radar_score_max" oninput="updateLabel('under_radar_score')">
+    </div>
+  </form>
+  <div>
+    <h2>Matching Destinations</h2>
+    <form id="destinations-form">
+      <div id="destinations-list"></div>
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <script>
+    let destinations = [];
+    fetch('/api/destinations/')
+      .then(response => response.json())
+      .then(data => {
+        destinations = data;
+        filterAndDisplay();
+      });
+
+    const scoreFields = [
+      'food_score','nightlife_score','nature_score','weather_score','culture_score','safety_score','cost_score','transport_score','activities_score','history_score','under_radar_score'
+    ];
+
+    function updateLabel(field) {
+      const min = document.getElementById(field + '_min').value;
+      const max = document.getElementById(field + '_max').value;
+      document.getElementById(field + '_val').textContent = min + '-' + max;
+      filterAndDisplay();
+    }
+
+    function filterAndDisplay() {
+      let filtered = destinations.filter(dest => {
+        return scoreFields.every(field => {
+          const min = parseInt(document.getElementById(field + '_min').value);
+          const max = parseInt(document.getElementById(field + '_max').value);
+          const val = parseInt(dest[field]);
+          return val >= min && val <= max;
+        });
+      });
+      const list = document.getElementById('destinations-list');
+      list.innerHTML = '';
+      filtered.forEach(dest => {
+        const id = 'dest_' + dest.airport;
+        const div = document.createElement('div');
+        div.innerHTML = `<label><input type="checkbox" id="${id}" name="destinations" value="${dest.airport}" checked> ${dest.destination_name} (${dest.country})</label>`;
+        list.appendChild(div);
+      });
+    }
+
+    scoreFields.forEach(field => {
+      document.getElementById(field + '_min').addEventListener('input', () => updateLabel(field));
+      document.getElementById(field + '_max').addEventListener('input', () => updateLabel(field));
+    });
+
+    document.getElementById('destinations-form').onsubmit = function(e) {
+      e.preventDefault();
+      const checked = Array.from(document.querySelectorAll('input[name="destinations"]:checked')).map(cb => cb.value);
+      fetch('/api/search_airports/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({airport_codes: checked})
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Airport codes sent: ' + data.airport_codes.join(', '));
+      });
+    };
+  </script>
+</body>
+</html>
