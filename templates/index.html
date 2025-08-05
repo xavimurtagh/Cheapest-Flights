@@ -1030,17 +1030,6 @@
         };
 
 
-            
-        
-            // Add hidden input fields to the form for each selected destination
-            selectedDestinations.forEach(function (dest, index) {
-                const input = document.createElement("input");
-                input.type = "hidden";
-                input.name = 'destination';  // Set the name to 'destination'
-                input.value = dest;
-                document.getElementById("searchForm").appendChild(input);
-            });
-        });
  
 
         // Clear localStorage 
