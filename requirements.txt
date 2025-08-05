@@ -1,6 +1,7 @@
 setuptools
 wheel
 flask==2.2.2
-pandas==1.26.4
+numpy==1.26.4
+pandas==1.3.2
 dotenv==1.1.1
 xgboost==2.0.3
