@@ -5,14 +5,10 @@ import requests
 from flask import Flask, flash, redirect, render_template, request, send_from_directory, session, jsonify, abort
 from flask_session import Session
 import re
-from search import get_historical_prices_kiwi as search
 from datetime import datetime
 from helper import apology
-import json
 from scored_searched_flights_new import score
-from format import get_lat_lon, get_geonames_id
 import pandas as pd
-from geopy.geocoders import Nominatim
 from collections import defaultdict
 import requests
 from dotenv import load_dotenv
