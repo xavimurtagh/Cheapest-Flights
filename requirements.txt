@@ -1,0 +1,6 @@
+pip install flask
+pip install flask_session
+pip install pandas
+pip install requests
+pip install dotenv
+pip install xgboost
