@@ -1,6 +1,7 @@
 numpy==1.26.4
 pandas==1.5.3
 xgboost==2.0.3
+gunicorn==19.7.1
 setuptools
 wheel
 flask==2.2.2
