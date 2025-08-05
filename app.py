@@ -95,8 +95,8 @@ def search_flights():
         
         try:
             flight_data, prices, country_codes, dates, city_codes = score(data,dist, CURRENCY)
-        except:
-            return render_template('no_results.html')
+        except Exception as e:
+            return render_template('no_results.html', error=str(e))
         #return jsonify(flight_data)
 
             # Pass the flight data to the template
