@@ -1,6 +1,6 @@
 from datetime import datetime
 import json
-from flight_to_csv import convert
+#from flight_to_csv import convert
 import csv
 import numpy as np
 import pandas as pd
@@ -131,4 +131,5 @@ if __name__ == '__main__':
     file = open("flight_data.json")
     flight_data = json.load(file)
     print(score(flight_data))
+
     '''
