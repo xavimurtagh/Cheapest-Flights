@@ -1030,30 +1030,6 @@
         };
 
 
-        document.getElementById("save-search-button").addEventListener("click", function (event) {
-            const formData = {
-                origin: document.getElementById('origin').value,
-                destination: document.getElementById('destination').value,
-                searchType: document.getElementById('search-type').value,
-                returnToValue: document.getElementById("return-to").value,
-                returnFromValue: document.getElementById("return-from").value,
-                departureToValue: document.getElementById("departure-to").value,
-                departureFromValue: document.getElementById("departure-from").value,
-                selectedDestinations: document.getElementById("selected-destinations-input").value,
-                nightsToValue: document.getElementById("nights-to").value,
-                nightsFromValue: document.getElementById("nights-from").value,
-                returnChoice: document.getElementById("return-choice").value,
-                direct: document.getElementById("direct").value
-            };
-            localStorage.setItem('formData', JSON.stringify(formData));
-        
-            // Get the selected destinations
-            const selectedDestinations = document.getElementById("selected-destinations-input").value.split(";");
-        
-            // Remove existing hidden input fields
-            document.querySelectorAll('[name^="destination"]').forEach(function (element) {
-                element.remove();
-            });
             
         
             // Add hidden input fields to the form for each selected destination
