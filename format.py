@@ -2,7 +2,6 @@ import csv
 import json
 from datetime import datetime
 import pandas as pd
-from geopy.geocoders import Nominatim
 import requests
 import pandas as pd
 from flask import  render_template, redirect
@@ -195,7 +194,7 @@ def get_geonames_id(city, country=None):
     else:
         return None
 
-geolocator = Nominatim(user_agent="cheapest-flights-app")
+#geolocator = Nominatim(user_agent="cheapest-flights-app")
 
 def get_lat_lon(place_name,country_code):
     try:
